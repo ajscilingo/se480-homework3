@@ -1,0 +1,20 @@
+# Compiled class file
+*.class
+
+# Log File
+*.log
+
+# Package Files
+*.jar
+*.war
+*.ear
+*.zip
+*.tar.gz
+*.rar
+*.lst
+
+#ignore target
+target/
+
+#ignore settings
+.settings/
