@@ -1,3 +1,5 @@
+package net.scilingo.Threading;
+
 import static org.junit.Assert.*;
 
 import java.util.ArrayList;
@@ -10,6 +12,8 @@ import java.util.concurrent.ForkJoinPool;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
+
+import net.scilingo.Threading.task.PrimeNumberTask;
 
 public class TestPrimeNumberTask {
 
@@ -44,6 +48,43 @@ public class TestPrimeNumberTask {
 		primer = Executors.newFixedThreadPool(1);
 		sleeper = Executors.newFixedThreadPool(1);
 		printer = Executors.newFixedThreadPool(1);
+		
+		List<CompletableFuture<Void>> futures = new ArrayList<CompletableFuture<Void>>();
+		for(int i = 0; i < 1000; ++i) {
+			final int n = i;
+			futures.add(CompletableFuture.supplyAsync( () -> PrimeNumberTask.calculateNthPrimeNumber(n), primer)
+				.thenApplyAsync( (Long result) -> {
+					try {
+						Thread.sleep(10);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					} 
+					return result; }, sleeper)
+				.thenAcceptAsync( (Long result) -> System.out.println(result), printer));
+		}
+		
+		for(CompletableFuture<Void> future: futures) {
+			try {
+				future.get();
+				assertTrue(future.isDone());
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (ExecutionException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
+	}		
+	
+	
+	@Test
+	public void testPrimeNumberLoopWithSize1CustomThreadPool() {
+		
+		primer = new MyFixedSizeThreadPool(1);
+		sleeper = new MyFixedSizeThreadPool(1);
+		printer = new MyFixedSizeThreadPool(1);
 		
 		List<CompletableFuture<Void>> futures = new ArrayList<CompletableFuture<Void>>();
 		for(int i = 0; i < 1000; ++i) {
@@ -111,6 +152,42 @@ public class TestPrimeNumberTask {
 	}		
 	
 	@Test
+	public void testPrimeNumberLoopWithSize2CustomThreadPool() {
+		
+		primer = new MyFixedSizeThreadPool(2);
+		sleeper = new MyFixedSizeThreadPool(2);
+		printer = new MyFixedSizeThreadPool(2);
+		
+		List<CompletableFuture<Void>> futures = new ArrayList<CompletableFuture<Void>>();
+		for(int i = 0; i < 1000; ++i) {
+			final int n = i;
+			futures.add(CompletableFuture.supplyAsync( () -> PrimeNumberTask.calculateNthPrimeNumber(n), primer)
+				.thenApplyAsync( (Long result) -> {
+					try {
+						Thread.sleep(10);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					} 
+					return result; }, sleeper)
+				.thenAcceptAsync( (Long result) -> System.out.println(result), printer));
+		}
+		
+		for(CompletableFuture<Void> future: futures) {
+			try {
+				future.get();
+				assertTrue(future.isDone());
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (ExecutionException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
+	}		
+	
+	@Test
 	public void testPrimeNumberLoopWithSize4ThreadPool() {
 		
 		primer = Executors.newFixedThreadPool(4);
@@ -146,6 +223,41 @@ public class TestPrimeNumberTask {
 		
 	}		
 	
+	@Test
+	public void testPrimeNumberLoopWithSize4CustomThreadPool() {
+		
+		primer = new MyFixedSizeThreadPool(4);
+		sleeper = new MyFixedSizeThreadPool(4);
+		printer = new MyFixedSizeThreadPool(4);
+		
+		List<CompletableFuture<Void>> futures = new ArrayList<CompletableFuture<Void>>();
+		for(int i = 0; i < 1000; ++i) {
+			final int n = i;
+			futures.add(CompletableFuture.supplyAsync( () -> PrimeNumberTask.calculateNthPrimeNumber(n), primer)
+				.thenApplyAsync( (Long result) -> {
+					try {
+						Thread.sleep(10);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					} 
+					return result; }, sleeper)
+				.thenAcceptAsync( (Long result) -> System.out.println(result), printer));
+		}
+		
+		for(CompletableFuture<Void> future: futures) {
+			try {
+				future.get();
+				assertTrue(future.isDone());
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (ExecutionException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
+	}		
 	
 	@Test
 	public void testPrimeNumberLoopWithSize8ThreadPool() {
@@ -183,6 +295,41 @@ public class TestPrimeNumberTask {
 		
 	}		
 	
+	@Test
+	public void testPrimeNumberLoopWithSize8CustomThreadPool() {
+		
+		primer = new MyFixedSizeThreadPool(8);
+		sleeper = new MyFixedSizeThreadPool(8);
+		printer = new MyFixedSizeThreadPool(8);
+		
+		List<CompletableFuture<Void>> futures = new ArrayList<CompletableFuture<Void>>();
+		for(int i = 0; i < 1000; ++i) {
+			final int n = i;
+			futures.add(CompletableFuture.supplyAsync( () -> PrimeNumberTask.calculateNthPrimeNumber(n), primer)
+				.thenApplyAsync( (Long result) -> {
+					try {
+						Thread.sleep(10);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					} 
+					return result; }, sleeper)
+				.thenAcceptAsync( (Long result) -> System.out.println(result), printer));
+		}
+		
+		for(CompletableFuture<Void> future: futures) {
+			try {
+				future.get();
+				assertTrue(future.isDone());
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (ExecutionException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
+	}		
 	
 	@Test
 	public void testPrimeNumberLoopWithSize16ThreadPool() {
@@ -221,11 +368,83 @@ public class TestPrimeNumberTask {
 	}		
 	
 	@Test
+	public void testPrimeNumberLoopWithSize16CustomThreadPool() {
+		
+		primer = new MyFixedSizeThreadPool(16);
+		sleeper = new MyFixedSizeThreadPool(16);
+		printer = new MyFixedSizeThreadPool(16);
+		
+		List<CompletableFuture<Void>> futures = new ArrayList<CompletableFuture<Void>>();
+		for(int i = 0; i < 1000; ++i) {
+			final int n = i;
+			futures.add(CompletableFuture.supplyAsync( () -> PrimeNumberTask.calculateNthPrimeNumber(n), primer)
+				.thenApplyAsync( (Long result) -> {
+					try {
+						Thread.sleep(10);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					} 
+					return result; }, sleeper)
+				.thenAcceptAsync( (Long result) -> System.out.println(result), printer));
+		}
+		
+		for(CompletableFuture<Void> future: futures) {
+			try {
+				future.get();
+				assertTrue(future.isDone());
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (ExecutionException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
+	}		
+	
+	@Test
 	public void testPrimeNumberLoopWithSize32ThreadPool() {
 		
 		primer = Executors.newFixedThreadPool(32);
 		sleeper = Executors.newFixedThreadPool(32);
 		printer = Executors.newFixedThreadPool(32);
+		
+		List<CompletableFuture<Void>> futures = new ArrayList<CompletableFuture<Void>>();
+		for(int i = 0; i < 1000; ++i) {
+			final int n = i;
+			futures.add(CompletableFuture.supplyAsync( () -> PrimeNumberTask.calculateNthPrimeNumber(n), primer)
+				.thenApplyAsync( (Long result) -> {
+					try {
+						Thread.sleep(10);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					} 
+					return result; }, sleeper)
+				.thenAcceptAsync( (Long result) -> System.out.println(result), printer));
+		}
+		
+		for(CompletableFuture<Void> future: futures) {
+			try {
+				future.get();
+				assertTrue(future.isDone());
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (ExecutionException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
+	}		
+	
+	@Test
+	public void testPrimeNumberLoopWithSize32CustomThreadPool() {
+		
+		primer = new MyFixedSizeThreadPool(32);
+		sleeper = new MyFixedSizeThreadPool(32);
+		printer = new MyFixedSizeThreadPool(32);
 		
 		List<CompletableFuture<Void>> futures = new ArrayList<CompletableFuture<Void>>();
 		for(int i = 0; i < 1000; ++i) {

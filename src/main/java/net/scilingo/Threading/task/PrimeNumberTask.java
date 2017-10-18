@@ -1,3 +1,5 @@
+package net.scilingo.Threading.task;
+
 public class PrimeNumberTask {
 	
 	public static Long calculateNthPrimeNumber(final int n) {
