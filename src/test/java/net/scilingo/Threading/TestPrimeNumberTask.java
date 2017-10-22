@@ -11,6 +11,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ForkJoinPool;
 
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import net.scilingo.Threading.task.PrimeNumberTask;
@@ -373,6 +374,44 @@ public class TestPrimeNumberTask {
 		primer = new MyFixedSizeThreadPool(16);
 		sleeper = new MyFixedSizeThreadPool(16);
 		printer = new MyFixedSizeThreadPool(16);
+		
+		List<CompletableFuture<Void>> futures = new ArrayList<CompletableFuture<Void>>();
+		for(int i = 0; i < 1000; ++i) {
+			final int n = i;
+			futures.add(CompletableFuture.supplyAsync( () -> PrimeNumberTask.calculateNthPrimeNumber(n), primer)
+				.thenApplyAsync( (Long result) -> {
+					try {
+						Thread.sleep(10);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					} 
+					return result; }, sleeper)
+				.thenAcceptAsync( (Long result) -> System.out.println(result), printer));
+		}
+		
+		for(CompletableFuture<Void> future: futures) {
+			try {
+				future.get();
+				assertTrue(future.isDone());
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (ExecutionException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
+	}		
+	
+	
+	@Test
+	@Ignore
+	public void testPrimeNumberLoopCustomBatchProcessorThreadPool() {
+		
+		primer = new MyThreadPoolBatchProcessor();
+		sleeper = new MyThreadPoolBatchProcessor();
+		printer = new MyThreadPoolBatchProcessor();
 		
 		List<CompletableFuture<Void>> futures = new ArrayList<CompletableFuture<Void>>();
 		for(int i = 0; i < 1000; ++i) {
@@ -831,4 +870,7 @@ public class TestPrimeNumberTask {
 		assertTrue(result.equals(7919L));
 	}
 
+	
+	
+	
 }
