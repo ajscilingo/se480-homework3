@@ -1,3 +1,17 @@
+/**
+ * MyFixedSizedThreadPool
+ * 
+ * A simple implementation of a fixed size thread pool
+ * Based off of the thread pool designs discussed 
+ * at the following places:
+ * 
+ * Sources:
+ * 1) https://caffinc.github.io/2016/03/simple-threadpool/
+ * 2) http://fasterjava.blogspot.com/2014/09/writing-non-blocking-executor.html 
+ * 
+ */
+
+
 package net.scilingo.Threading;
 
 import java.util.concurrent.ConcurrentLinkedQueue;
